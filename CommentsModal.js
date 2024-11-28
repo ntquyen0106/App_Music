@@ -1,5 +1,4 @@
-
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,9 +11,30 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 
-const Comment = ({ comment, onLike, onReply }) => (
+const saveCommentsToStorage = async (postId, comments) => {
+  try {
+    const allComments = JSON.parse(await AsyncStorage.getItem('allComments')) || {};
+    allComments[postId] = comments;
+    await AsyncStorage.setItem('allComments', JSON.stringify(allComments));
+  } catch (error) {
+    console.error('Lỗi lưu bình luận:', error);
+  }
+};
+
+const loadCommentsFromStorage = async (postId) => {
+  try {
+    const allComments = JSON.parse(await AsyncStorage.getItem('allComments')) || {};
+    return allComments[postId] || [];
+  } catch (error) {
+    console.error('Lỗi tải bình luận:', error);
+    return [];
+  }
+};
+
+const Comment = ({ comment, onLike, onReply, onDelete }) => (
   <View style={styles.commentContainer}>
     <Image source={{ uri: comment.userAvatar }} style={styles.commentAvatar} />
     <View style={styles.commentContent}>
@@ -29,6 +49,9 @@ const Comment = ({ comment, onLike, onReply }) => (
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onReply(comment.id)}>
           <Text style={styles.actionText}>Reply</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => onDelete(comment.id)}>
+          <Text style={styles.actionTextDelete}>Delete</Text>
         </TouchableOpacity>
       </View>
       {comment.replies && comment.replies.map((reply) => (
@@ -55,13 +78,23 @@ const Comment = ({ comment, onLike, onReply }) => (
   </View>
 );
 
-const CommentsModal = ({ visible, onClose, postId, comments: initialComments }) => {
+const CommentsModal = ({ visible, onClose, postId, comments: initialComments, onCommentAdded }) => {
   const [comments, setComments] = useState(initialComments);
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState(null);
   const inputRef = useRef(null);
 
-  const handleAddComment = () => {
+  useEffect(() => {
+    if (visible) {
+      const fetchComments = async () => {
+        const storedComments = await loadCommentsFromStorage(postId);
+        setComments(storedComments);
+      };
+      fetchComments();
+    }
+  }, [visible]);
+
+  const handleAddComment = async () => {
     if (!newComment.trim()) return;
 
     const newCommentObj = {
@@ -74,22 +107,14 @@ const CommentsModal = ({ visible, onClose, postId, comments: initialComments }) 
       replies: [],
     };
 
-    if (replyTo) {
-      setComments(comments.map(comment => {
-        if (comment.id === replyTo) {
-          return {
-            ...comment,
-            replies: [...(comment.replies || []), newCommentObj]
-          };
-        }
-        return comment;
-      }));
-      setReplyTo(null);
-    } else {
-      setComments([...comments, newCommentObj]);
-    }
-
+    const updatedComments = [...comments, newCommentObj];
+    setComments(updatedComments);
     setNewComment('');
+    await saveCommentsToStorage(postId, updatedComments);
+
+    if (onCommentAdded) {
+      onCommentAdded();
+    }
   };
 
   const handleReply = (commentId) => {
@@ -106,13 +131,14 @@ const CommentsModal = ({ visible, onClose, postId, comments: initialComments }) 
     }));
   };
 
+  const handleDeleteComment = async (commentId) => {
+    const updatedComments = comments.filter((comment) => comment.id !== commentId);
+    setComments(updatedComments);
+    await saveCommentsToStorage(postId, updatedComments);
+  };
+
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent={false}
-      onRequestClose={onClose}
-    >
+    <Modal visible={visible} animationType="slide" transparent={false}>
       <View style={styles.modalContainer}>
         <View style={styles.header}>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -129,15 +155,13 @@ const CommentsModal = ({ visible, onClose, postId, comments: initialComments }) 
               comment={item}
               onLike={handleLike}
               onReply={handleReply}
+              onDelete={handleDeleteComment}
             />
           )}
           style={styles.commentsList}
         />
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.inputContainer}
-        >
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.inputContainer}>
           <Image
             source={{ uri: 'https://i.pravatar.cc/100' }}
             style={styles.inputAvatar}
@@ -178,123 +202,81 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
+    padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: '#ccc',
   },
   closeButton: {
-    padding: 5,
+    marginRight: 10,
   },
   headerTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 15,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   commentsList: {
     flex: 1,
   },
   commentContainer: {
     flexDirection: 'row',
-    padding: 15,
+    padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: '#ccc',
   },
   commentAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginRight: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
   },
   commentContent: {
     flex: 1,
   },
   commentHeader: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     alignItems: 'center',
   },
   commentUsername: {
-    fontWeight: '600',
-    marginRight: 8,
+    fontWeight: 'bold',
+    marginRight: 5,
   },
   commentText: {
     flex: 1,
   },
   commentActions: {
     flexDirection: 'row',
-    marginTop: 8,
-    gap: 16,
-  },
-  timestamp: {
-    fontSize: 12,
-    color: '#666',
+    marginTop: 5,
   },
   actionText: {
-    fontSize: 12,
-    color: '#666',
-    fontWeight: '500',
+    marginRight: 10,
+    color: '#007AFF',
   },
-  replyContainer: {
-    flexDirection: 'row',
-    marginTop: 12,
-    marginLeft: 20,
-  },
-  replyAvatar: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    marginRight: 8,
-  },
-  replyContent: {
-    flex: 1,
-  },
-  replyHeader: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-  },
-  replyUsername: {
-    fontWeight: '600',
-    marginRight: 4,
-  },
-  replyToText: {
-    color: '#0095f6',
-    marginRight: 4,
-  },
-  replyText: {
-    flex: 1,
-  },
-  replyActions: {
-    flexDirection: 'row',
-    marginTop: 4,
-    gap: 16,
+  actionTextDelete: {
+    color: 'red',
+    fontWeight: 'bold',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    padding: 10,
     borderTopWidth: 1,
-    borderTopColor: '#eee',
-    backgroundColor: '#fff',
+    borderTopColor: '#ccc',
   },
   inputAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginRight: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
   },
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#ccc',
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 8,
-    maxHeight: 100,
   },
   sendButton: {
-    marginLeft: 12,
-    padding: 4,
+    marginLeft: 10,
   },
   sendButtonDisabled: {
     opacity: 0.5,
@@ -302,3 +284,4 @@ const styles = StyleSheet.create({
 });
 
 export default CommentsModal;
+
