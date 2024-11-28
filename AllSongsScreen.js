@@ -13,7 +13,6 @@ export default function AllSongsScreen({ route }) {
   const [selectedSong, setSelectedSong] = useState(null);
   const [artists, setArtists] = useState([]);
   const {followedArtists, setFollowedArtists} = useAppContext();
-
   useEffect(() => {
   const fetchData = async () => {
     try {
