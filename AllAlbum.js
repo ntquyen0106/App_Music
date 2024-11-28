@@ -17,8 +17,6 @@ useEffect(() => {
     })
     .catch((error) => console.error(error));
 }, []);
-
-
 useEffect(() => {
   const updateTime = () => {
       const now = new Date();
@@ -29,7 +27,6 @@ useEffect(() => {
   const interval = setInterval(updateTime, 60000);
   return () => clearInterval(interval);
 }, []);
-
   const renderAlbum = ({ item }) => (
     <TouchableOpacity>
       <View style={styles.albumItem}>
