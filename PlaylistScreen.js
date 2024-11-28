@@ -32,7 +32,7 @@ const addPlaylist = async () => {
 
     // Cập nhật state và lưu vào AsyncStorage
     setPlaylists(updatedPlaylists);
-    await savePlaylists(updatedPlaylists); // Lưu lại danh sách mới
+    await savePlaylists(updatedPlaylists);
 
     setNewPlaylistName('');
     setModalVisible(false);
