@@ -156,9 +156,8 @@ export default function AudioListing_SearchResults({ navigation }) {
 
   const handleSearch = () => {
     if (searchQuery === '') {
-      setFilteredResults([]); // Nếu không có từ khóa tìm kiếm, không hiển thị gì
+      setFilteredResults([]); 
     } else {
-      // Chuyển từ khóa tìm kiếm thành không dấu
       const normalizedSearchQuery = removeVietnameseTones(searchQuery).split(' ').filter(word => word.length > 0);
 
       const allResults = [
@@ -181,7 +180,7 @@ export default function AudioListing_SearchResults({ navigation }) {
       if (filterType === 'All') {
         setFilteredResults(allResults);
       } else if (filterType === 'Tracks') {
-        setFilteredResults(allResults.filter(item => item.tenBaiHat)); // Lọc chỉ các bài hát
+        setFilteredResults(allResults.filter(item => item.tenBaiHat));
       } else if (filterType === 'Albums') {
         setFilteredResults(allResults.filter(item => item.tenAlbum)); // Lọc chỉ các album
       } else if (filterType === 'Artists') {
