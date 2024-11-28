@@ -13,8 +13,6 @@ const AllContent = () => {
   const [selectedSong, setSelectedSong] = useState(null);
   const [artists, setArtists] = useState([]);
   const {followedArtists, setFollowedArtists} = useAppContext();
-
-  // Lấy danh sách bài hát và nghệ sĩ từ API
 useEffect(() => {
   const fetchData = async () => {
     try {
