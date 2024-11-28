@@ -58,7 +58,6 @@ useEffect(() => {
       }
     };
 
-  
   const toggleFavorite = async (song) => {
   const isFavorite = library.some((s) => s.id === song.id);
   let updatedLibrary;
