@@ -50,10 +50,8 @@ const FollowedArtistsPage = ({ navigation }) => {
   };
 
   loadData();
-}, []); // Chỉ gọi một lần khi component được render lần đầu
+}, []);
 
-
-  // Hiển thị từng nghệ sĩ
   const renderArtistItem = ({ item }) => (
     <TouchableOpacity>
       <View style={styles.artItem}>
