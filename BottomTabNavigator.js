@@ -14,7 +14,7 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
     return (
         <Tab.Navigator
-            initialRouteName="Home" // Đặt màn hình mặc định là "Search"
+            initialRouteName="Home" 
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ color, size }) => {
                     let iconName;
@@ -31,7 +31,7 @@ const BottomTabNavigator = () => {
                     }
                     return <MaterialIcons name={iconName} size={size} color={color} />;
                 },
-                headerShown: false, // Ẩn thanh header/banner trên đầu
+                headerShown: false,
                 tabBarActiveTintColor: 'tomato',
                 tabBarInactiveTintColor: 'gray',
             })}
