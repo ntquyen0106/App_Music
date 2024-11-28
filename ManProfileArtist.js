@@ -22,8 +22,6 @@ import AddToPlaylistModal from './AddToPlaylistModal'; // import modal bạn v�
   const [selectedSong, setSelectedSong] = useState(null);
   const [artists, setArtists] = useState([]);
   const {followedArtists, setFollowedArtists} = useAppContext();
-
-  // Lấy danh sách bài hát và nghệ sĩ từ API
 useEffect(() => {
   const fetchData = async () => {
     try {
@@ -48,7 +46,7 @@ useEffect(() => {
   };
 
   fetchData();
-  }, [library, followedArtists]); // Đảm bảo cập nhật khi context thay đổi
+  }, [library, followedArtists]);
 
     const toggleFollowArtist = async (artist) => {
       const isFollowed = followedArtists.some((s) => s.id === artist.id);
