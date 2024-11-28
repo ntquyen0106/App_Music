@@ -56,8 +56,6 @@ export default function Home({navigation}) {
       }
 
       setFollowedArtists(updatedFollowedArtists);
-      
-      // Lưu vào AsyncStorage
       try {
         await AsyncStorage.setItem('followedArtists', JSON.stringify(updatedFollowedArtists));
       } catch (error) {
