@@ -46,8 +46,6 @@ const SongActionsModal = ({ visible, onClose, onAddToFavorites, onAddToPlaylist,
     </Modal>
   );
 };
-
-// Styles cho modal
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
