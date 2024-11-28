@@ -18,8 +18,6 @@ const PlaylistDetailScreen = () => {
   const toggleFavorite = async (song) => {
     const isFavorite = library.some((s) => s.id === song.id);
     let updatedLibrary;
-
-    // Cập nhật trạng thái yêu thích trong thư viện
     if (isFavorite) {
       updatedLibrary = library.filter((s) => s.id !== song.id);
     } else {
@@ -76,7 +74,6 @@ const PlaylistDetailScreen = () => {
       </View>
     );
   }
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{playlist.name}</Text>
