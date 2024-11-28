@@ -54,8 +54,6 @@ const App = () => {
           <Stack.Screen name="Album" component={AlbumScreen} options={{ headerShown: true }} />
           <Stack.Screen name="Search" component={AudioListing_SearchResults} options={{ headerShown: false }}/>
           <Stack.Screen name="Artist" component={ManProfileArtist} options={{ headerShown: true }} />
-
-           {/* Màn hình Phát Nhạc */}
           <Stack.Screen 
             name="PN" 
             component={PhatNhac} 
@@ -72,8 +70,5 @@ const App = () => {
     </AppProvider>
   );
 };
-
-
-
 export default App;
 
