@@ -34,7 +34,6 @@ const LoginScreen = () => {
       setError('Email hoặc mật khẩu không chính xác!');
     }
   };
-
   return (
     <LinearGradient
       colors={['#4e54c8', '#8f94fb']}
