@@ -12,7 +12,6 @@ const LoginScreen = () => {
   
 
   const handleLogin = () => {
-    // API giả lập với dữ liệu người dùng
     const mockAPI = {
       users: [
         {
@@ -30,7 +29,7 @@ const LoginScreen = () => {
 
     if (user) {
       setError('');
-      navigation.navigate('Tabs'); // Điều hướng đến màn hình chính
+      navigation.navigate('Tabs');
     } else {
       setError('Email hoặc mật khẩu không chính xác!');
     }
@@ -38,7 +37,7 @@ const LoginScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#4e54c8', '#8f94fb']} // Tông màu tím-xanh phong cách âm nhạc
+      colors={['#4e54c8', '#8f94fb']}
       style={styles.container}
     >
       <Text style={styles.title}>Music Login</Text>
