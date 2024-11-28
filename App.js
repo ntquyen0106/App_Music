@@ -17,6 +17,7 @@ import AllAlbum from './AllAlbum';
 import AllSongsScreen from './AllSongsScreen';
 import LoginScreen from './LoginScreen';
 import PhatNhac from './PhatNhac';
+import ChatScreen from './ChatScreen';
 
 const Stack = createStackNavigator();
 
@@ -25,10 +26,8 @@ const App = () => {
     <AppProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="LoginScreen">
-          {/* Các màn hình chính */}
           <Stack.Screen name="Tabs" component={BottomTabNavigator} options={{ headerShown: false }} />
           
-          {/* Màn hình chi tiết Playlist */}
           <Stack.Screen name="PlaylistScreen" component={PlaylistScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="PlaylistDetail" component={PlaylistDetailScreen} />
@@ -41,8 +40,8 @@ const App = () => {
             options={{
               headerShown: true,
               title: "All Songs",
-              headerBackTitle: "Back", // Tiêu đề nút quay lại
-              headerBackTitleVisible: true, // Hiển thị tiêu đề nút quay lại
+              headerBackTitle: "Back", 
+              headerBackTitleVisible: true, 
               headerStyle: { backgroundColor: '#f4511e' },
               headerTintColor: '#fff',
               headerTitleStyle: { fontWeight: 'bold' },
@@ -54,6 +53,20 @@ const App = () => {
           <Stack.Screen name="Album" component={AlbumScreen} options={{ headerShown: true }} />
           <Stack.Screen name="Search" component={AudioListing_SearchResults} options={{ headerShown: false }}/>
           <Stack.Screen name="Artist" component={ManProfileArtist} options={{ headerShown: true }} />
+
+          <Stack.Screen 
+            name="Chat" 
+            component={ChatScreen} 
+            options={{ 
+              headerShown: true, 
+              title: "AI Chat", 
+              headerStyle: { backgroundColor: '#6200EE' },
+              headerTintColor: '#fff',
+              headerTitleStyle: { fontWeight: 'bold' },
+            }} 
+          />
+
+           {/* Màn hình Phát Nhạc */}
           <Stack.Screen 
             name="PN" 
             component={PhatNhac} 
@@ -70,5 +83,8 @@ const App = () => {
     </AppProvider>
   );
 };
+
+
+
 export default App;
 
